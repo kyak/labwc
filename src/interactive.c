@@ -45,7 +45,7 @@ interactive_begin(struct view *view, enum input_mode mode, uint32_t edges)
 			 */
 			return;
 		}
-		if (view->maximized || view_is_tiled(view)) {
+		if (!view_is_floating(view)) {
 			/*
 			 * Un-maximize and restore natural width/height.
 			 * Don't reset tiled state yet since we may want
@@ -71,7 +71,7 @@ interactive_begin(struct view *view, enum input_mode mode, uint32_t edges)
 		cursor_set(seat, LAB_CURSOR_GRAB);
 		break;
 	case LAB_INPUT_STATE_RESIZE:
-		if (view->maximized || view->fullscreen) {
+		if (view->fullscreen || view->maximized != VIEW_AXIS_NONE) {
 			/*
 			 * We don't allow resizing while maximized or
 			 * fullscreen.
@@ -130,7 +130,7 @@ snap_to_edge(struct view *view)
 			/*store_natural_geometry*/ false);
 	} else if (cursor_y <= area->y + snap_range) {
 		if (rc.snap_top_maximize) {
-			view_maximize(view, true,
+			view_maximize(view, VIEW_AXIS_BOTH,
 				/*store_natural_geometry*/ false);
 		} else {
 			view_snap_to_edge(view, VIEW_EDGE_UP,
