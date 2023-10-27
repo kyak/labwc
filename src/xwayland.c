@@ -1046,10 +1046,10 @@ void
 xwayland_update_workarea(struct server *server)
 {
 	/*
-	 * Do nothing if called before xwayland is ready. This function
-	 * will be called again from the ready signal handler.
+	 * Do nothing if called during destroy or before xwayland is ready.
+	 * This function will be called again from the ready signal handler.
 	 */
-	if (!server->xwayland->xwm) {
+	if (!server->xwayland || !server->xwayland->xwm) {
 		return;
 	}
 
