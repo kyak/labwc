@@ -318,7 +318,7 @@ handle_destroy(struct wl_listener *listener, void *data)
 	wl_list_remove(&xwayland_view->set_override_redirect.link);
 	wl_list_remove(&xwayland_view->set_strut_partial.link);
 	wl_list_remove(&xwayland_view->set_window_type.link);
-	wl_list_remove(&xwayland_view->about_to_map.link);
+	wl_list_remove(&xwayland_view->map_request.link);
 	wl_list_remove(&xwayland_view->focus_in.link);
 
 	view_destroy(view);
@@ -528,10 +528,10 @@ handle_set_strut_partial(struct wl_listener *listener, void *data)
  * also avoids undesired layout changes with some apps (e.g. HomeBank).
  */
 static void
-handle_about_to_map(struct wl_listener *listener, void *data)
+handle_map_request(struct wl_listener *listener, void *data)
 {
 	struct xwayland_view *xwayland_view =
-		wl_container_of(listener, xwayland_view, about_to_map);
+		wl_container_of(listener, xwayland_view, map_request);
 	struct view *view = &xwayland_view->base;
 	struct wlr_xwayland_surface *xsurface = xwayland_view->xwayland_surface;
 
@@ -617,7 +617,7 @@ set_initial_position(struct view *view,
 
 	/*
 	 * Always make sure the view is onscreen and adjusted for any
-	 * layout changes that could have occurred between about_to_map
+	 * layout changes that could have occurred between map_request
 	 * and the actual map event.
 	 */
 	view_adjust_for_layout_change(view);
@@ -905,7 +905,7 @@ xwayland_view_create(struct server *server,
 	CONNECT_SIGNAL(xsurface, xwayland_view, set_override_redirect);
 	CONNECT_SIGNAL(xsurface, xwayland_view, set_strut_partial);
 	CONNECT_SIGNAL(xsurface, xwayland_view, set_window_type);
-	CONNECT_SIGNAL(xsurface, xwayland_view, about_to_map);
+	CONNECT_SIGNAL(xsurface, xwayland_view, map_request);
 	CONNECT_SIGNAL(xsurface, xwayland_view, focus_in);
 
 	wl_list_insert(&view->server->views, &view->link);
