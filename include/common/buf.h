@@ -45,4 +45,10 @@ void buf_init(struct buf *s);
  */
 void buf_add(struct buf *s, const char *data);
 
+/**
+ * buf_clear - clear the buffer, internal allocations are preserved
+ * @s: buffer
+ */
+void buf_clear(struct buf *s);
+
 #endif /* LABWC_BUF_H */
